@@ -1,0 +1,28 @@
+apiVersion: skaffold/v1
+kind: Config
+metadata:
+  name: kubernetes-quickstart
+build:
+  artifacts:
+  - image: k3d-mycluster-registry:51493/quarkus-test/kubernetes-quickstart:1.0.0-SNAPSHOT
+    context: .
+    sync:
+      manual:
+       - src: 'src/**/*.java'
+         dest: /usr/src/app/src
+         strip: 'src/'
+       - src: 'pom.xml'
+         dest: /usr/src/app
+    custom:
+      # for windows use build.cmd
+      #buildCommand: .\build.cmd
+      buildCommand: ./build.sh
+      dependencies:
+        dockerfile: 
+          path: 'src/main/docker/Dockerfile.jvm'
+  local:
+    push: false
+deploy:
+  kubectl:
+    manifests:
+    - target/kubernetes/kubernetes.yml

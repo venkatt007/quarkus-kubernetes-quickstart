@@ -1,0 +1,16 @@
+apiVersion: skaffold/v2beta17
+kind: Config
+metadata:
+  name: kubernetes-quickstart
+build:
+  artifacts:
+  - image: k3d-mycluster-registry:51493/quarkus-test/kubernetes-quickstart
+    context: "src/main/docker"
+    docker:
+      dockerfile: Dockerfile.jvm
+deploy:
+  kubectl:
+    manifests:
+    - "src/main/kubernetes/kubernetes.yml"
+portForward:
+  - port: 8081
